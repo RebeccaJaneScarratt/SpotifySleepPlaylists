@@ -5,7 +5,7 @@ library(ggplot2)
 library(reshape2)
 library(scales)
 library(data.table)
-library(flipMultivariates)
+#library(flipMultivariates)
 library(psych)
 library(rstudioapi)
 library(rstatix)
@@ -24,7 +24,7 @@ current_path = rstudioapi::getActiveDocumentContext()$path
 setwd(dirname(current_path ))
 
 # Read data
-data <- read.csv('Data/SPD_withDuplicates.csv')
+data <- read.csv('SPD_withDuplicates.csv')
 
 # Fix some typos
 data$demoCat[data$demoCat == 'baby'] = 'Baby'
@@ -59,8 +59,8 @@ data.duplicatedOnly$TrackName <- as.factor(data.duplicatedOnly$TrackName)
 # https://www.aicrowd.com/challenges/spotify-sequential-skip-prediction-challenge
 
 
-mssdFiles <- c('Data/tf_000000000000.csv',
-               'Data/tf_000000000001.csv')
+mssdFiles <- c('tf_000000000000.csv',
+               'tf_000000000001.csv')
 mssd <- do.call(rbind, lapply(mssdFiles, fread))
 
 # Subset to keep only the features we're interested in
@@ -178,58 +178,13 @@ t.tempo.eff <- mergedData %>%
   cohens_d(tempo ~ category,var.equal = FALSE)
 toc()
 
-
-# Compare Spotiy vs User playlists ----
-# CONSIDER DELETING ThiS SECTION
-# Note that one playlist is tagged "NA" in user category, so lets drop that one.
-
-data.UserVsSpotify <- subset(data.unique, select=c(userCat, acousticness, danceability,
-                                           energy, instrumentalness, tempo,
-                                           liveness, loudness, valence,
-                                           speechiness))
-data.UserVsSpotify <- subset(data.UserVsSpotify, userCat != 'NA')
-# drop empty level in userCat
-data.UserVsSpotify$userCat <- droplevels(data.UserVsSpotify$userCat)
-
-tUVSS.acousticness.p <- data.UserVsSpotify %>%
-  t_test(acousticness ~ userCat, var.equal = FALSE)
-
-tUVSS.acousticness.eff <- data.UserVsSpotify %>%
-  cohens_d(acousticness ~ userCat, var.equal = FALSE)
-
-tUVSS.danceability.p <- data.UserVsSpotify %>%
-  t_test(danceability ~ userCat, var.equal = FALSE)
-
-tUVSS.energy.p <- data.UserVsSpotify %>%
-  t_test(energy ~ userCat, var.equal = FALSE)
-
-tUVSS.instrumentalness.p <- data.UserVsSpotify %>%
-  t_test(instrumentalness ~ userCat, var.equal = FALSE)
-
-tUVSS.tempo.p <- data.UserVsSpotify %>%
-  t_test(tempo ~ userCat, var.equal = FALSE)
-
-tUVSS.liveness.p <- data.UserVsSpotify %>%
-  t_test(liveness ~ userCat, var.equal = FALSE)
-
-tUVSS.loudness.p <- data.UserVsSpotify %>%
-  t_test(loudness ~ userCat, var.equal = FALSE)
-
-tUVSS.valence.p <- data.UserVsSpotify %>%
-  t_test(valence ~ userCat, var.equal = FALSE)
-
-tUVSS.speechiness.p <- data.UserVsSpotify %>%
-  t_test(speechiness ~ userCat, var.equal = FALSE)
-
-
-
 # Descriptive statistics ----
 
 
 descriptive <- describeBy(mergedData[c(3:12)], mergedData$category, IQR=TRUE, fast=FALSE)
 # Uncomment if you want to save the files
-write.csv(descriptive[2], 'Data/generalDescriptive.csv')
-write.csv(descriptive[1], 'Data/sleepDescriptive.csv')
+# write.csv(descriptive[2], 'Data/generalDescriptive.csv')
+# write.csv(descriptive[1], 'Data/sleepDescriptive.csv')
 
 # Linear Discriminant Analysis (LDA) ----
 
@@ -266,7 +221,7 @@ pAcc <- ggplot(subset(meltData, variable=='acousticness'),aes(x=category, y=valu
   geom_boxplot(aes(x = as.numeric(category)-0.1, y = value),outlier.shape = NA, alpha = 0.3, width = .1, colour = "BLACK") +
   #geom_point(position = position_jitter(width = .45), size = .1, alpha=0.02)+
   ylab('')+xlab('')+
-  coord_flip()+theme_cowplot()+guides(fill = FALSE)+
+  coord_flip()+theme_cowplot()+guides(fill = "none")+
   scale_colour_brewer(palette = "Dark2")+
   scale_fill_brewer(palette = "Dark2")+
   ggtitle('Acousticness') +
@@ -428,38 +383,37 @@ plot(1:17,
      ylab = 'WCSS')
 
 # Uncomment if you want to write result again
-write(wcss, file='Data/kMeansresults')
+# write(wcss, file='Output/kMeansresults')
 
 # Fitting K-Means to the dataset
 kmeans = kmeans(x = dFC.s, centers = 7, iter.max=1000)
 kmeans.labels = kmeans$cluster
 
 #uncomment this section if you want to repeat the calculations
-#
-write(kmeans$centers, file='Data/kMeansCenters')
+# write(kmeans$centers, file='Output/kMeansCenters')
 #loaded.kmeansCenters <- load('kmeansCenters')
 #
 data.unique$clusterID <- kmeans.labels
 data.unique$clusterID <- as.factor(data.unique$clusterID)
 #
 # Save data.unique, so that we have all the data.
-write.csv(data.unique, 'Data/SPD_unique_withClusters.csv')
+write.csv(data.unique, 'SPD_unique_withClusters.csv')
 
 
 # Read the clustered data
-data.unique <- read.csv('Data/SPD_unique_withClusters.csv')
+data.unique <- read.csv('SPD_unique_withClusters.csv')
 
 # Descriptive stats per K-means ----
 
 descriptiveClusters <- describeBy(data.unique[c(6:14)], data.unique$clusterID, IQR=TRUE, fast=FALSE)
 # Uncomment if you want to write the data again
-write.csv(descriptive[1], 'Data/c1Descriptive.csv')
-write.csv(descriptive[2], 'Data/c2Descriptive.csv')
-write.csv(descriptive[3], 'Data/c3Descriptive.csv')
-write.csv(descriptive[4], 'Data/c4Descriptive.csv')
-write.csv(descriptive[5], 'Data/c5Descriptive.csv')
-write.csv(descriptive[6], 'Data/c6Descriptive.csv')
-write.csv(descriptive[7], 'Data/c7Descriptive.csv')
+write.csv(descriptive[1], 'Output/c1Descriptive.csv')
+write.csv(descriptive[2], 'Output/c2Descriptive.csv')
+write.csv(descriptive[3], 'Output/c3Descriptive.csv')
+write.csv(descriptive[4], 'Output/c4Descriptive.csv')
+write.csv(descriptive[5], 'Output/c5Descriptive.csv')
+write.csv(descriptive[6], 'Output/c6Descriptive.csv')
+write.csv(descriptive[7], 'Output/c7Descriptive.csv')
 
 # Now make a table with median values per cluster
 mC1 <- descriptiveClusters[1]$'1'
@@ -493,7 +447,7 @@ rownames(medianDF) <- c('danceability', 'energy', 'loudness', 'speechiness', 'ac
 
 
 # Uncomment if you want to write the file again
-write.csv(t(medianDF), 'Data/ClustersMedian.csv')
+write.csv(t(medianDF), 'Output/ClustersMedian.csv')
 
 
 
@@ -514,10 +468,10 @@ summary(as.factor(data$clusterID))
 
 
 # Uncomment if you want to write the file again.
-write.csv(data, 'Data/SPD_withClusters.csv')
+write.csv(data, 'SPD_withClusters.csv')
 
 # Read the data in again
-data <- read.csv('Data/SPD_withClusters.csv')
+data <- read.csv('SPD_withClusters.csv')
 
 # Having a look at popular tracks within clusters
 
@@ -583,13 +537,13 @@ data$clusterID <- as.factor(data$clusterID)
 
 descClust_six <- describeBy(data[c(7:15)], data$clusterID, IQR=TRUE, fast=FALSE)
 # Uncomment if you want to write the data again
-#write.csv(descriptive[1], 'Data/c1Descriptive.csv')
-#write.csv(descriptive[2], 'Data/c2Descriptive.csv')
-#write.csv(descriptive[3], 'Data/c3Descriptive.csv')
-#write.csv(descriptive[4], 'Data/c4Descriptive.csv')
-#write.csv(descriptive[5], 'Data/c5Descriptive.csv')
-#write.csv(descriptive[6], 'Data/c6Descriptive.csv')
-#write.csv(descriptive[7], 'Data/c7Descriptive.csv')
+#write.csv(descriptive[1], 'Output/c1Descriptive.csv')
+#write.csv(descriptive[2], 'Output/c2Descriptive.csv')
+#write.csv(descriptive[3], 'Output/c3Descriptive.csv')
+#write.csv(descriptive[4], 'Output/c4Descriptive.csv')
+#write.csv(descriptive[5], 'Output/c5Descriptive.csv')
+#write.csv(descriptive[6], 'Output/c6Descriptive.csv')
+#write.csv(descriptive[7], 'Output/c7Descriptive.csv')
 
 # Now make a table with median values per cluster, then calculate relative
 mC1_six <- descClust_six[1]$'1'
@@ -658,41 +612,4 @@ ggsave('Plots/bottom.pdf', width = 10, height = 1.25, dpi=300)
 library(patchwork)
 
 top / bottom
-
-
-
-
-
-
-# Now look at the reduced genres
-
-genreData <- read.csv('Data/SPD_withClusters_and_reducedGenre.csv')
-genreData$X <- NULL
-genreData$Unnamed..0 <- NULL
-genreData$clusterID[genreData$clusterID == 6] <- 4
-
-genreData$reducedGenre <- as.factor(genreData$reducedGenre)
-
-genre.c1 <- subset(genreData$reducedGenre, genreData$clusterID == 1)
-sort(summary(genre.c1), decreasing=TRUE)
-
-genre.c2 <- subset(genreData$reducedGenre, genreData$clusterID == 2)
-sort(summary(genre.c2), decreasing=TRUE)
-
-genre.c3 <- subset(genreData$reducedGenre, genreData$clusterID == 3)
-sort(summary(genre.c3), decreasing=TRUE)
-
-genre.c4 <- subset(genreData$reducedGenre, genreData$clusterID == 4)
-sort(summary(genre.c4), decreasing=TRUE)
-
-genre.c5 <- subset(genreData$reducedGenre, genreData$clusterID == 5)
-sort(summary(genre.c5), decreasing=TRUE)
-
-genre.c6 <- subset(genreData$reducedGenre, genreData$clusterID == 7)
-sort(summary(genre.c6), decreasing=TRUE)
-
-
-# top tracks per cluster
-
-c1 <- subet(genreData
 
