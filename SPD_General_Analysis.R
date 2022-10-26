@@ -21,10 +21,11 @@ set.seed(1)
 
 # Set working directory using RStudio API
 current_path = rstudioapi::getActiveDocumentContext()$path 
-setwd(dirname(current_path ))
+current_path_up = "~/GitHub/SpotifySleepPlaylists/"
+setwd(dirname(current_path))
 
 # Read data
-data <- read.csv('SPD_withDuplicates.csv')
+data <- read.csv('Data/SPD_withDuplicates.csv')
 
 # Fix some typos
 data$demoCat[data$demoCat == 'baby'] = 'Baby'
@@ -183,8 +184,8 @@ toc()
 
 descriptive <- describeBy(mergedData[c(3:12)], mergedData$category, IQR=TRUE, fast=FALSE)
 # Uncomment if you want to save the files
-# write.csv(descriptive[2], 'Data/generalDescriptive.csv')
-# write.csv(descriptive[1], 'Data/sleepDescriptive.csv')
+# write.csv(descriptive[2], 'General Analysis/generalDescriptive.csv')
+# write.csv(descriptive[1], 'General Analysis/sleepDescriptive.csv')
 
 # Linear Discriminant Analysis (LDA) ----
 
@@ -226,7 +227,7 @@ pAcc <- ggplot(subset(meltData, variable=='acousticness'),aes(x=category, y=valu
   scale_fill_brewer(palette = "Dark2")+
   ggtitle('Acousticness') +
   theme(text = element_text(size=12))
-ggsave('Plots/acousticness.pdf', width = w, height = h, dpi=dpi)
+ggsave('General Analysis/acousticness.pdf', width = w, height = h, dpi=dpi)
 
 pTemp <- ggplot(subset(meltData, variable=='tempo'),aes(x=category, y=value, fill = category))+
   geom_flat_violin(position = position_nudge(x = 0, y = 0),adjust = 0.4)+
@@ -238,7 +239,7 @@ pTemp <- ggplot(subset(meltData, variable=='tempo'),aes(x=category, y=value, fil
   scale_fill_brewer(palette = "Dark2")+
   ggtitle('Tempo') +
   theme(text = element_text(size=12))
-ggsave('Plots/tempo.pdf', width = w, height = h, dpi=dpi)
+ggsave('General Analysis/tempo.pdf', width = w, height = h, dpi=dpi)
 
 pDance <- ggplot(subset(meltData, variable=='danceability'),aes(x=category, y=value, fill = category))+
   geom_flat_violin(position = position_nudge(x = 0, y = 0),adjust = 0.4)+
@@ -250,7 +251,7 @@ pDance <- ggplot(subset(meltData, variable=='danceability'),aes(x=category, y=va
   scale_fill_brewer(palette = "Dark2")+
   ggtitle('Danceability') +
   theme(text = element_text(size=12))
-ggsave('Plots/danceability.pdf', width = w, height = h, dpi=dpi)
+ggsave('General Analysis/danceability.pdf', width = w, height = h, dpi=dpi)
 
 pEnergy <- ggplot(subset(meltData, variable=='energy'),aes(x=category, y=value, fill = category))+
   geom_flat_violin(position = position_nudge(x = 0, y = 0),adjust = 0.4)+
@@ -262,7 +263,7 @@ pEnergy <- ggplot(subset(meltData, variable=='energy'),aes(x=category, y=value, 
   scale_fill_brewer(palette = "Dark2")+
   ggtitle('Energy') +
   theme(text = element_text(size=12))
-ggsave('Plots/energy.pdf', width = w, height = h, dpi=dpi)
+ggsave('General Analysis/energy.pdf', width = w, height = h, dpi=dpi)
 
 pInst <- ggplot(subset(meltData, variable=='instrumentalness'),aes(x=category, y=value, fill = category))+
   geom_flat_violin(position = position_nudge(x = 0, y = 0),adjust = 0.4)+
@@ -274,7 +275,7 @@ pInst <- ggplot(subset(meltData, variable=='instrumentalness'),aes(x=category, y
   scale_fill_brewer(palette = "Dark2")+
   ggtitle('Instrumentalness') +
   theme(text = element_text(size=12))
-ggsave('Plots/instrumentalness.pdf', width = w, height = h, dpi=dpi)
+ggsave('General Analysis/instrumentalness.pdf', width = w, height = h, dpi=dpi)
 
 pVal <- ggplot(subset(meltData, variable=='valence'),aes(x=category, y=value, fill = category))+
   geom_flat_violin(position = position_nudge(x = 0, y = 0),adjust = 0.4)+
@@ -286,7 +287,7 @@ pVal <- ggplot(subset(meltData, variable=='valence'),aes(x=category, y=value, fi
   scale_fill_brewer(palette = "Dark2")+
   ggtitle('Valence') +
   theme(text = element_text(size=12))
-ggsave('Plots/valence.pdf', width = w, height = h, dpi=dpi)
+ggsave('General Analysis/valence.pdf', width = w, height = h, dpi=dpi)
 
 pSpeech <- ggplot(subset(meltData, variable=='speechiness'),aes(x=category, y=value, fill = category))+
   geom_flat_violin(position = position_nudge(x = 0, y = 0),adjust = 0.4)+
@@ -298,7 +299,7 @@ pSpeech <- ggplot(subset(meltData, variable=='speechiness'),aes(x=category, y=va
   scale_fill_brewer(palette = "Dark2")+
   ggtitle('Speechiness') +
   theme(text = element_text(size=12))
-ggsave('Plots/speechiness.pdf', width = w, height = h, dpi=dpi)
+ggsave('General Analysis/speechiness.pdf', width = w, height = h, dpi=dpi)
 
 
 pKey <- ggplot(subset(meltData, variable=='key'),aes(x=category, y=value, fill = category))+
@@ -311,7 +312,7 @@ pKey <- ggplot(subset(meltData, variable=='key'),aes(x=category, y=value, fill =
   scale_fill_brewer(palette = "Dark2")+
   ggtitle('Key') +
   theme(text = element_text(size=12))
-ggsave('Plots/key.pdf', width = w, height = h, dpi=dpi)
+ggsave('General Analysis/key.pdf', width = w, height = h, dpi=dpi)
 
 
 
@@ -325,7 +326,7 @@ pLive <- ggplot(subset(meltData, variable=='liveness'),aes(x=category, y=value, 
   scale_fill_brewer(palette = "Dark2")+
   ggtitle('Liveness') +
   theme(text = element_text(size=12))
-ggsave('Plots/liveness.pdf', width = w, height = h, dpi=dpi)
+ggsave('General Analysis/liveness.pdf', width = w, height = h, dpi=dpi)
 
 
 pLoud <- ggplot(subset(meltData, variable=='loudness'),aes(x=category, y=value, fill = category))+
@@ -338,7 +339,7 @@ pLoud <- ggplot(subset(meltData, variable=='loudness'),aes(x=category, y=value, 
   scale_fill_brewer(palette = "Dark2")+
   ggtitle('Loudness') +
   theme(text = element_text(size=12))
-ggsave('Plots/loudness.pdf', width = w, height = h, dpi=dpi)
+ggsave('General Analysis/loudness.pdf', width = w, height = h, dpi=dpi)
 
 
 
@@ -383,37 +384,37 @@ plot(1:17,
      ylab = 'WCSS')
 
 # Uncomment if you want to write result again
-# write(wcss, file='Output/kMeansresults')
+# write(wcss, file='General Analysis/kMeansresults')
 
 # Fitting K-Means to the dataset
 kmeans = kmeans(x = dFC.s, centers = 7, iter.max=1000)
 kmeans.labels = kmeans$cluster
 
 #uncomment this section if you want to repeat the calculations
-# write(kmeans$centers, file='Output/kMeansCenters')
+# write(kmeans$centers, file='General Analysis/kMeansCenters')
 #loaded.kmeansCenters <- load('kmeansCenters')
 #
 data.unique$clusterID <- kmeans.labels
 data.unique$clusterID <- as.factor(data.unique$clusterID)
 #
 # Save data.unique, so that we have all the data.
-write.csv(data.unique, 'SPD_unique_withClusters.csv')
+write.csv(data.unique, 'Data/SPD_unique_withClusters.csv')
 
 
 # Read the clustered data
-data.unique <- read.csv('SPD_unique_withClusters.csv')
+data.unique <- read.csv('Data/SPD_unique_withClusters.csv')
 
 # Descriptive stats per K-means ----
 
 descriptiveClusters <- describeBy(data.unique[c(6:14)], data.unique$clusterID, IQR=TRUE, fast=FALSE)
 # Uncomment if you want to write the data again
-write.csv(descriptive[1], 'Output/c1Descriptive.csv')
-write.csv(descriptive[2], 'Output/c2Descriptive.csv')
-write.csv(descriptive[3], 'Output/c3Descriptive.csv')
-write.csv(descriptive[4], 'Output/c4Descriptive.csv')
-write.csv(descriptive[5], 'Output/c5Descriptive.csv')
-write.csv(descriptive[6], 'Output/c6Descriptive.csv')
-write.csv(descriptive[7], 'Output/c7Descriptive.csv')
+write.csv(descriptive[1], 'General Analysis/c1Descriptive.csv')
+write.csv(descriptive[2], 'General Analysis/c2Descriptive.csv')
+write.csv(descriptive[3], 'General Analysis/c3Descriptive.csv')
+write.csv(descriptive[4], 'General Analysis/c4Descriptive.csv')
+write.csv(descriptive[5], 'General Analysis/c5Descriptive.csv')
+write.csv(descriptive[6], 'General Analysis/c6Descriptive.csv')
+write.csv(descriptive[7], 'General Analysis/c7Descriptive.csv')
 
 # Now make a table with median values per cluster
 mC1 <- descriptiveClusters[1]$'1'
@@ -447,7 +448,7 @@ rownames(medianDF) <- c('danceability', 'energy', 'loudness', 'speechiness', 'ac
 
 
 # Uncomment if you want to write the file again
-write.csv(t(medianDF), 'Output/ClustersMedian.csv')
+write.csv(t(medianDF), 'General Analysis/ClustersMedian.csv')
 
 
 
@@ -468,10 +469,10 @@ summary(as.factor(data$clusterID))
 
 
 # Uncomment if you want to write the file again.
-write.csv(data, 'SPD_withClusters.csv')
+write.csv(data, 'Data/SPD_withClusters.csv')
 
 # Read the data in again
-data <- read.csv('SPD_withClusters.csv')
+data <- read.csv('Data/SPD_withClusters.csv')
 
 # Having a look at popular tracks within clusters
 
@@ -537,13 +538,12 @@ data$clusterID <- as.factor(data$clusterID)
 
 descClust_six <- describeBy(data[c(7:15)], data$clusterID, IQR=TRUE, fast=FALSE)
 # Uncomment if you want to write the data again
-#write.csv(descriptive[1], 'Output/c1Descriptive.csv')
-#write.csv(descriptive[2], 'Output/c2Descriptive.csv')
-#write.csv(descriptive[3], 'Output/c3Descriptive.csv')
-#write.csv(descriptive[4], 'Output/c4Descriptive.csv')
-#write.csv(descriptive[5], 'Output/c5Descriptive.csv')
-#write.csv(descriptive[6], 'Output/c6Descriptive.csv')
-#write.csv(descriptive[7], 'Output/c7Descriptive.csv')
+#write.csv(descriptive[1], 'General Analysis/c1Descriptive.csv')
+#write.csv(descriptive[2], 'General Analysis/c2Descriptive.csv')
+#write.csv(descriptive[3], 'General Analysis/c3Descriptive.csv')
+#write.csv(descriptive[4], 'General Analysis/c4Descriptive.csv')
+#write.csv(descriptive[5], 'General Analysis/c5Descriptive.csv')
+#write.csv(descriptive[6], 'General Analysis/c6Descriptive.csv')
 
 # Now make a table with median values per cluster, then calculate relative
 mC1_six <- descClust_six[1]$'1'
@@ -596,7 +596,7 @@ top <- ggplot(subset(clusterDiff, !variable %in% c('tempo', 'loudness')), aes(x=
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   facet_grid(~ cluster)
-ggsave('Plots/top.pdf', width = 10, height = 3, dpi=300)
+ggsave('General Analysis/top.pdf', width = 10, height = 3, dpi=300)
 
 # make two separate one due to differences in scale
 bottom <- ggplot(subset(clusterDiff, variable %in% c('tempo', 'loudness')), aes(x=variable, y=value)) + 
@@ -607,7 +607,7 @@ bottom <- ggplot(subset(clusterDiff, variable %in% c('tempo', 'loudness')), aes(
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   facet_grid(~ cluster, scales = "fixed")
-ggsave('Plots/bottom.pdf', width = 10, height = 1.25, dpi=300)
+ggsave('General Analysis/bottom.pdf', width = 10, height = 1.25, dpi=300)
 
 library(patchwork)
 

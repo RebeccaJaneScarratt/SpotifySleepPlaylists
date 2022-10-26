@@ -131,3 +131,10 @@ for genre in uncategorized['Genres']:
 uncatGenresDF = pd.DataFrame(data=uncatGenres)
 count = uncatGenresDF[0].value_counts()
 
+#%% Make new files
+
+genres_in_sleep = data['reducedGenre'].value_counts()
+
+genres_in_sleep.to_csv('Genre Analysis/Genres_in_Sleep.csv')
+
+data.to_csv('Data/SPD_withClusters_and_reducedGenre.csv')

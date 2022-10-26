@@ -1,7 +1,26 @@
+# Attach libraries
+
+library(dplyr)
+library(ggplot2)
+library(reshape2)
+library(scales)
+library(data.table)
+#library(flipMultivariates)
+library(psych)
+library(rstudioapi)
+library(rstatix)
+library(tictoc)
+library(cowplot)
+library(readr)
+
+# Set working directory using RStudio API
+current_path = rstudioapi::getActiveDocumentContext()$path 
+setwd(dirname(current_path ))
+
 
 # Now look at the reduced genres
 
-genreData <- read.csv('SPD_withClusters_and_reducedGenre.csv')
+genreData <- read.csv('Data/SPD_withClusters_and_reducedGenre.csv')
 genreData$X <- NULL
 genreData$Unnamed..0 <- NULL
 genreData$clusterID[genreData$clusterID == 6] <- 4
