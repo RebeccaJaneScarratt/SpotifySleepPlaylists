@@ -21,7 +21,6 @@ set.seed(1)
 
 # Set working directory using RStudio API
 current_path = rstudioapi::getActiveDocumentContext()$path 
-current_path_up = "~/GitHub/SpotifySleepPlaylists/"
 setwd(dirname(current_path))
 
 # Read data
@@ -391,18 +390,11 @@ kmeans = kmeans(x = dFC.s, centers = 7, iter.max=1000)
 kmeans.labels = kmeans$cluster
 
 #uncomment this section if you want to repeat the calculations
-# write(kmeans$centers, file='General Analysis/kMeansCenters')
-#loaded.kmeansCenters <- load('kmeansCenters')
+write(kmeans$centers, file='General Analysis/kMeansCenters')
 #
 data.unique$clusterID <- kmeans.labels
 data.unique$clusterID <- as.factor(data.unique$clusterID)
-#
-# Save data.unique, so that we have all the data.
-write.csv(data.unique, 'Data/SPD_unique_withClusters.csv')
 
-
-# Read the clustered data
-data.unique <- read.csv('Data/SPD_unique_withClusters.csv')
 
 # Descriptive stats per K-means ----
 
@@ -442,20 +434,20 @@ medianDF$cluster5 <- mC5
 medianDF$cluster6 <- mC6
 medianDF$cluster7 <- mC7
 
-colnames(medianDF) <- c('Cluster1', 'Cluster2','Cluster3', 'Cluster4','Cluster5', 'Cluster6','Cluster7')
+colnames(medianDF) <- c('Cluster1', 'Cluster2','Cluster3', 'Cluster4','Cluster5', 'Cluster6', 'Cluster7')
 rownames(medianDF) <- c('danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness',
 'liveness', 'valence', 'tempo')
 
 
 # Uncomment if you want to write the file again
-write.csv(t(medianDF), 'General Analysis/ClustersMedian.csv')
+#write.csv(t(medianDF), 'General Analysis/ClustersMedianSevenClusters.csv')
 
 
 
 # Remap K-means cluster to the big dataframe with duplicated tracks, to look at popularity/etc ----
 
 # Make dataframe containing the map
-keyMap <- data.unique[,c(2,31)]
+keyMap <- data.unique[,c(2,28)]
 keyMap$TrackID <- as.character(keyMap$TrackID)
 keyMap$clusterID <- as.numeric(keyMap$clusterID)
 
@@ -467,12 +459,6 @@ data$TrackIDmatch <- NULL
 
 summary(as.factor(data$clusterID))
 
-
-# Uncomment if you want to write the file again.
-write.csv(data, 'Data/SPD_withClusters.csv')
-
-# Read the data in again
-data <- read.csv('Data/SPD_withClusters.csv')
 
 # Having a look at popular tracks within clusters
 
@@ -526,12 +512,26 @@ rownames(pop7df) <- 1:nrow(pop7df)
 top20.c7 <- head(pop7df,20)
 
 
-# looks like it's now 6 and 4 that needs to be collapsed
+# looks like it's now 6 and 4 that needs to be collapsed. Although every time the clustering analysis is done, these values change
 
 
 data$clusterID[data$clusterID == 6] <- 4
 data$clusterID <- as.factor(data$clusterID)
 
+# Uncomment if you want to write the file again.
+write.csv(data, 'Data/SPD_withClusters.csv')
+
+# Read the data in again
+data <- read.csv('Data/SPD_withClusters.csv')
+
+data.unique$clusterID[data.unique$clusterID == 6] <- 4
+data.unique$clusterID <- as.factor(data.unique$clusterID)
+
+# Save data.unique, so that we have all the data.
+write.csv(data.unique, 'Data/SPD_unique_withClusters.csv')
+
+# Read the unique clustered data
+data.unique <- read.csv('Data/SPD_unique_withClusters.csv')
 
 # Now redo the descriptive stats, to get data to plot
 # Doing this on the entire dataset to get a view of how clusters size up within the dataset
@@ -556,7 +556,7 @@ mC4_six <- descClust_six[4]$'4'
 mC4_six <- t(t(mC4_six$median))
 mC5_six <- descClust_six[5]$'5'
 mC5_six <- t(t(mC5_six$median))
-mC6_six <- descClust_six[6]$'7'
+mC6_six <- descClust_six[6]$'6'
 mC6_six <- t(t(mC6_six$median))
 
 # Put into a dataframe
@@ -570,6 +570,8 @@ medianDF_six$cluster6 <- mC6_six
 colnames(medianDF_six) <- c('Cluster1', 'Cluster2','Cluster3', 'Cluster4','Cluster5', 'Cluster6')
 rownames(medianDF_six) <- c('danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness',
                             'liveness', 'valence', 'tempo')
+
+write.csv(t(medianDF), 'General Analysis/ClustersMedianSixClusters.csv')
 
 # get the median for all data
 
