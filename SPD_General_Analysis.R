@@ -538,12 +538,12 @@ data.unique <- read.csv('Data/SPD_unique_withClusters.csv')
 
 descClust_six <- describeBy(data[c(7:15)], data$clusterID, IQR=TRUE, fast=FALSE)
 # Uncomment if you want to write the data again
-#write.csv(descriptive[1], 'General Analysis/c1Descriptive.csv')
-#write.csv(descriptive[2], 'General Analysis/c2Descriptive.csv')
-#write.csv(descriptive[3], 'General Analysis/c3Descriptive.csv')
-#write.csv(descriptive[4], 'General Analysis/c4Descriptive.csv')
-#write.csv(descriptive[5], 'General Analysis/c5Descriptive.csv')
-#write.csv(descriptive[6], 'General Analysis/c6Descriptive.csv')
+write.csv(descClust_six[1], 'General Analysis/c1Descriptive.csv')
+write.csv(descClust_six[2], 'General Analysis/c2Descriptive.csv')
+write.csv(descClust_six[3], 'General Analysis/c3Descriptive.csv')
+write.csv(descClust_six[4], 'General Analysis/c4Descriptive.csv')
+write.csv(descClust_six[5], 'General Analysis/c5Descriptive.csv')
+write.csv(descClust_six[6], 'General Analysis/c6Descriptive.csv')
 
 # Now make a table with median values per cluster, then calculate relative
 mC1_six <- descClust_six[1]$'1'
@@ -571,7 +571,7 @@ colnames(medianDF_six) <- c('Cluster1', 'Cluster2','Cluster3', 'Cluster4','Clust
 rownames(medianDF_six) <- c('danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness',
                             'liveness', 'valence', 'tempo')
 
-write.csv(t(medianDF), 'General Analysis/ClustersMedianSixClusters.csv')
+write.csv(t(medianDF_six), 'General Analysis/ClustersMedianSixClusters2.csv')
 
 # get the median for all data
 
